@@ -11,8 +11,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import java.nio.charset.StandardCharsets;
-
 public record UseDeserializerArgumentResolver(ObjectMapper baseMapper) implements HandlerMethodArgumentResolver {
 
     @Override
@@ -33,18 +31,12 @@ public record UseDeserializerArgumentResolver(ObjectMapper baseMapper) implement
         var request = webRequest.getNativeRequest(HttpServletRequest.class);
         byte[] body = StreamUtils.copyToByteArray(request.getInputStream());
 
-        try {
-            var mapper = baseMapper.copy();
-            var descInstance = deserClass.getDeclaredConstructor().newInstance();
+        var mapper = baseMapper.copy();
+        var descInstance = deserClass.getDeclaredConstructor().newInstance();
 
-            var module = new SimpleModule().addDeserializer(paramType, descInstance);
-            mapper.registerModule(module);
-            return mapper.readValue(body, mapper.constructType(parameter.getGenericParameterType()));
-        } catch (Exception ex) {
-            String snippet = new String(body, StandardCharsets.UTF_8);
-            String message = "Failed to deserialize request body with %s into %s. Body: %s"
-                    .formatted(deserClass.getSimpleName(), paramType.getSimpleName(), snippet);
-            throw new Exception(message, ex);
-        }
+        var module = new SimpleModule().addDeserializer(paramType, descInstance);
+        mapper.registerModule(module);
+        return mapper.readValue(body, mapper.constructType(parameter.getGenericParameterType()));
+
     }
 }

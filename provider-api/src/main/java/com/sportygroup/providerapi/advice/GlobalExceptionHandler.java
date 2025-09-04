@@ -1,8 +1,12 @@
 package com.sportygroup.providerapi.advice;
 
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +36,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(pd);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler(DatabindException.class)
+    public ResponseEntity<ProblemDetail> handleBindingError(DatabindException ex, HttpServletRequest req) {
+        var pd = problem(HttpStatus.BAD_REQUEST,
+                "binding error",
+                ex.getMessage(),
+                req);
+
+        return ResponseEntity.badRequest().body(pd);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleMethodArgNotValid(MethodArgumentNotValidException ex, HttpServletRequest req) {
         Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream().collect(Collectors.toMap(
                 FieldError::getField,
