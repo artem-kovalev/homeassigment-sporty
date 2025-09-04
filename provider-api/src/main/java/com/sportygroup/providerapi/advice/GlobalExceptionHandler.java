@@ -24,8 +24,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ProblemDetail> handleResponseStatus(ResponseStatusException ex, HttpServletRequest req) {
         var status = HttpStatus.valueOf(ex.getStatusCode().value());
-        var pd = problem(status, ex.getReason() != null ? ex.getReason() : status.getReasonPhrase(),
-                "Request failed", req);
+        var title = ex.getReason() != null
+                ? ex.getReason()
+                : status.getReasonPhrase();
+
+        var pd = problem(status, title, "Request failed", req);
         return ResponseEntity.status(status).body(pd);
     }
 
@@ -36,7 +39,10 @@ public class GlobalExceptionHandler {
                 DefaultMessageSourceResolvable::getDefaultMessage,
                 (a, b) -> a, LinkedHashMap::new));
 
-        var pd = problem(HttpStatus.BAD_REQUEST, "Validation failed", "One or more fields are invalid", req);
+        var pd = problem(HttpStatus.BAD_REQUEST,
+                "Validation failed",
+                "One or more fields are invalid",
+                req);
         pd.setProperty("errors", fieldErrors);
         return ResponseEntity.badRequest().body(pd);
     }
@@ -46,8 +52,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleGeneric(Exception ex, HttpServletRequest req) {
         log.error("Unexpected error", ex);
 
-        var pd = problem(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error",
-                "An unexpected error occurred", req);
+        var pd = problem(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Internal Server Error",
+                "An unexpected error occurred",
+                req);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(pd);
     }
 
