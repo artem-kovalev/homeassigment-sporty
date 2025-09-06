@@ -17,7 +17,7 @@ public final class DeserializerHelper {
             "away", MatchOutcome.AWAY_WIN, "2", MatchOutcome.AWAY_WIN);
 
     public static JsonNode get(JsonNode node, String field, DeserializationContext context)  throws IOException {
-        var result = node.get(field);
+        var result = getIgnoreCase(node, field);
         if (result == null || result.isNull()) {
             context.reportInputMismatch(EventMessageDto.class, "Field '%s' is required and must be string", field);
         }
@@ -25,7 +25,8 @@ public final class DeserializerHelper {
     }
 
     public static String reqText(JsonNode node, String field, DeserializationContext context)  throws IOException {
-        var result = node.get(field);
+        var result = getIgnoreCase(node, field);
+
         if (result == null || result.isNull() || !result.isTextual()) {
             context.reportInputMismatch(EventMessageDto.class, "Field '%s' is required and must be string", field);
         }
@@ -33,7 +34,7 @@ public final class DeserializerHelper {
     }
 
     public static double reqDouble(JsonNode node, String field, DeserializationContext context)  throws IOException {
-        var result = node.get(field);
+        var result = getIgnoreCase(node, field);
         if (result == null || result.isNull() || !result.isNumber()) {
             context.reportInputMismatch(EventMessageDto.class, "Field '%s' is required and must be double", field);
         }
@@ -49,4 +50,22 @@ public final class DeserializerHelper {
 
         return out;
     }
+
+    private static JsonNode getIgnoreCase(JsonNode node, String field)  throws IOException {
+        var result = node.get(field);
+        if (result != null) {
+            return result;
+        }
+
+        var fields = node.fieldNames();
+        while (fields.hasNext()) {
+            var key = fields.next();
+            if(key.equalsIgnoreCase(field)) {
+                return node.get(key);
+            }
+        }
+
+        return null;
+    }
+
 }

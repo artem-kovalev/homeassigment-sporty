@@ -17,8 +17,10 @@ public class EventPublisherImpl implements EventPublisher {
     public void send(EventMessageDto message) throws IOException {
         if (message instanceof BetSettlementDto) {
             log.info("Put bet settlement into queue");
+            return;
         } else if (message instanceof OddsChangeDto) {
             log.info("Put odds change into queue");
+            return;
         }
 
         throw new UnsupportedOperationException("%s not supported yet.".formatted(message.getClass().getSimpleName()));
