@@ -22,14 +22,14 @@ For run all-test
 ./run-all-tests.sh
 ```
 
-For build and run provider-api on port 8099
+For build and run provider-api on port 8089
 ```bash
 ./run-provider-api.sh
 ```
 
 ## 🐳 Build & Run via Docker Compose
 You can run the service using **Docker Compose**.
-Docker-compose file located in root folder. By default service start on **http://localhost:8099**
+Docker-compose file located in root folder. By default service start on **http://localhost:8089**
 
 ### Build and Start:
 ```bash
@@ -76,7 +76,7 @@ curl -X POST localhost:8089/provider-beta/feed \
   -d '{ "type": "ODDS", "event_id": "ev321", "odds": { "home": 2, "draw": 1.1, "away": 4.0 }}'
 ```
 ```bash
-curl -X POST localhost:8080/provider-beta/feed \
+curl -X POST localhost:8089/provider-beta/feed \
   -H 'Content-Type: application/json' \
   -d '{ "type": "SETTLEMENT", "event_id": "ev321", "result": "away" }'
 ```
