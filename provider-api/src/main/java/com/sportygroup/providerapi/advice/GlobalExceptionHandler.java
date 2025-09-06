@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
         pd.setProperty("errors", fieldErrors);
         return ResponseEntity.badRequest().body(pd);
     }
-    
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleGeneric(Exception ex, HttpServletRequest req) {
         log.error("Unexpected error", ex);
