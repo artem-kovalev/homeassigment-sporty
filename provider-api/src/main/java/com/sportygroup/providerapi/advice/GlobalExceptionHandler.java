@@ -1,12 +1,9 @@
 package com.sportygroup.providerapi.advice;
 
 import com.fasterxml.jackson.databind.DatabindException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -60,8 +57,7 @@ public class GlobalExceptionHandler {
         pd.setProperty("errors", fieldErrors);
         return ResponseEntity.badRequest().body(pd);
     }
-
-
+    
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleGeneric(Exception ex, HttpServletRequest req) {
         log.error("Unexpected error", ex);
