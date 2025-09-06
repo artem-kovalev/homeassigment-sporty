@@ -71,7 +71,7 @@ curl -X POST localhost:8089/provider-alpha/feed \
 
 ### Beta provider requests:
 ```bash
-curl -X POST localhost:8089/provider-alpha/feed \
+curl -X POST localhost:8089/provider-beta/feed \
   -H 'Content-Type: application/json' \
   -d '{ "type": "ODDS", "event_id": "ev321", "odds": { "home": 2, "draw": 1.1, "away": 4.0 }}'
 ```
