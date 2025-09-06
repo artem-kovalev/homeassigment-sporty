@@ -8,7 +8,7 @@ services:
     image: provider-api:latest
     container_name: provider-api
     ports:
-      - "8099:8080"
+      - "8089:8080"
     environment:
       SPRING_PROFILES_ACTIVE: default
       JAVA_TOOL_OPTIONS: -XX:+UseContainerSupport -XX:MaxRAMPercentage=75
